@@ -1,102 +1,131 @@
 
-import { useRef } from "react"
+import { useMemo, useRef } from "react"
 import { Canvas, useFrame } from "@react-three/fiber"
-import { Float } from "@react-three/drei"
 import * as THREE from "three"
 
-function Sculpture() {
-  const group = useRef<THREE.Group>(null)
+type DragState = {
+  yaw: number
+  pitch: number
+}
 
-  useFrame((state, delta) => {
-    if (!group.current) return
+function City({ dragState }: { dragState: React.MutableRefObject<DragState> }) {
+  const cityRef = useRef<THREE.Group>(null)
 
-    // Continuous slow rotation
-    group.current.rotation.y += delta * 0.18
+  
+const buildings = useMemo(() => {
+  const items = []
 
-    // Subtle response to mouse movement
-    group.current.rotation.x = THREE.MathUtils.lerp(
-      group.current.rotation.x,
-      state.pointer.y * 0.2,
-      0.04
-    )
+  for (let i = 0; i < 180; i++) {
+    // Deterministic random values
+    const random = (n: number) => {
+      const value = Math.sin(n * 127.1 + 311.7) * 43758.5453
+      return value - Math.floor(value)
+    }
 
-    group.current.rotation.z = THREE.MathUtils.lerp(
-      group.current.rotation.z,
-      -state.pointer.x * 0.2,
-      0.04
-    )
+    const angle = random(i * 3 + 1) * Math.PI * 2
+    const radius = Math.sqrt(random(i * 3 + 2)) * 19
+
+    const x = Math.cos(angle) * radius
+    const z = Math.sin(angle) * radius
+
+    // Vary building sizes and heights
+    const height = 1 + random(i * 3 + 3) * 5
+    const width = 0.5 + random(i * 3 + 4) * 0.7
+    const depth = 0.5 + random(i * 3 + 5) * 0.7
+
+    items.push({
+      x,
+      z,
+      height,
+      width,
+      depth,
+    })
+  }
+
+  return items
+}, [])
+
+
+  useFrame((state) => {
+    if (!cityRef.current) return
+
+    const baseY = state.clock.getElapsedTime() * 0.18
+    cityRef.current.rotation.y = baseY + dragState.current.yaw
+    cityRef.current.rotation.x = -0.12 + dragState.current.pitch
+    cityRef.current.rotation.z = dragState.current.pitch * 0.25
   })
 
   return (
-    <Float
-      speed={1.5}
-      rotationIntensity={0.15}
-      floatIntensity={0.35}
-    >
-      <group ref={group}>
-        {/* Main metallic sculpture */}
-        <mesh>
-          <torusKnotGeometry args={[1.05, 0.32, 220, 32, 2, 3]} />
-          <meshStandardMaterial
-            color="#c6a477"
-            metalness={0.85}
-            roughness={0.2}
+    <group ref={cityRef}>
+      {/* Wireframe city buildings */}
+      {buildings.map((building, i) => (
+        <mesh
+          key={i}
+          position={[
+            building.x,
+            building.height / 2,
+            building.z,
+          ]}
+        >
+          <boxGeometry
+            args={[
+              building.width,
+              building.height,
+              building.depth,
+            ]}
           />
-        </mesh>
 
-        {/* Fine outer orbit */}
-        <mesh rotation={[0.8, 0.3, 0.2]}>
-          <torusGeometry args={[1.75, 0.008, 12, 180]} />
-          <meshStandardMaterial
-            color="#d9bb91"
-            metalness={0.8}
-            roughness={0.3}
+          <meshBasicMaterial
+            color="#ff7900"
+            wireframe
+            transparent
+            opacity={0.9}
           />
         </mesh>
-
-        {/* Small orbiting detail */}
-        <mesh position={[1.55, 0.65, 0.2]}>
-          <sphereGeometry args={[0.075, 24, 24]} />
-          <meshStandardMaterial
-            color="#f0d5a8"
-            metalness={0.9}
-            roughness={0.15}
-          />
-        </mesh>
-      </group>
-    </Float>
+      ))}
+    </group>
   )
 }
 
 export default function HeroScene() {
+  const dragState = useRef<DragState>({
+    yaw: 0,
+    pitch: 0,
+  })
+
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect()
+    const x = (event.clientX - rect.left) / rect.width
+    const y = (event.clientY - rect.top) / rect.height
+
+    dragState.current.yaw = (x - 0.5) * 1.8
+    dragState.current.pitch = THREE.MathUtils.clamp(
+      (y - 0.5) * 1.4,
+      -0.9,
+      0.9
+    )
+  }
+
   return (
-    <div className="hero-3d">
+    <div
+      className="hero-3d"
+      onPointerMove={handlePointerMove}
+      style={{ cursor: "default", touchAction: "none" }}
+    >
       <Canvas
-        camera={{ position: [0, 0, 5], fov: 45 }}
+        orthographic
+        camera={{
+          position: [15, 25, 35],
+          zoom: 15,
+          near: 0.1,
+          far: 200,
+        }}
+        gl={{ antialias: true, alpha: true }}
         dpr={[1, 1.5]}
-        gl={{ alpha: true, antialias: true }}
       >
-        <ambientLight intensity={0.7} />
-
-        <directionalLight
-          position={[3, 4, 5]}
-          intensity={3}
-          color="#fff0d6"
-        />
-
-        <pointLight
-          position={[-3, -2, 2]}
-          intensity={20}
-          color="#c6a477"
-        />
-
-        <pointLight
-          position={[2, 1, -3]}
-          intensity={12}
-          color="#ffffff"
-        />
-
-        <Sculpture />
+        <color attach="background" args={["#101110"]} />
+        <ambientLight intensity={1} />
+        <City dragState={dragState} />
       </Canvas>
     </div>
   )

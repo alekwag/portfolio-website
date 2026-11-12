@@ -1,6 +1,7 @@
 import './index.css'
 import Navbar from "./Navbar"
 import { motion } from "motion/react"
+import HeroScene from "./HeroScene"
 
 import {
   BrowserRouter,
@@ -21,86 +22,103 @@ function HomePage() {
       <Navbar />
 
       
-    <section className="hero">
+      <section className="hero">
 
-      <motion.div
-        className="hero-content"
-        initial="hidden"
-        animate="visible"
-        variants={{
-          hidden: {},
-          visible: {
-            transition: {
-              staggerChildren: 0.16,
-              delayChildren: 0.2,
-            },
-          },
-        }}
-      >
-        <motion.p
-          className="eyebrow"
+        <motion.div
+          className="hero-content"
+          initial="hidden"
+          animate="visible"
           variants={{
-            hidden: { opacity: 0, y: 20 },
+            hidden: {},
             visible: {
-              opacity: 1,
-              y: 0,
-              transition: { duration: 0.7 },
-            },
-          }}
-        >
-          <span className="status-dot"></span>
-          COMPUTER SCIENCE · SOFTWARE DEVELOPMENT · 3D TECHNOLOGY
-        </motion.p>
-
-        <motion.h1
-          variants={{
-            hidden: { opacity: 0, y: 45 },
-            visible: {
-              opacity: 1,
-              y: 0,
               transition: {
-                duration: 1,
-                ease: [0.22, 1, 0.36, 1],
+                staggerChildren: 0.16,
+                delayChildren: 0.2,
               },
             },
           }}
         >
-          Engineering ideas through
-          <span> code, creativity & technology.</span>
-        </motion.h1>
-
-        <motion.p
-          className="hero-description"
-          variants={{
-              hidden: { opacity: 0, y: 25 },
+          <motion.p
+            className="eyebrow"
+            variants={{
+              hidden: { opacity: 0, y: 20 },
               visible: {
                 opacity: 1,
                 y: 0,
-                transition: { duration: 0.8 },
+                transition: { duration: 0.7 },
               },
             }}
-        >
-          I'm a Computer Science student at the University of Auckland
-          interested in software development, interactive 3D environments
-          and the intersection of technology and the built environment.
-        </motion.p>
+          >
+            <span className="status-dot"></span>
+            COMPUTER SCIENCE · SOFTWARE DEVELOPMENT · 3D TECHNOLOGY
+          </motion.p>
 
-        <motion.div
-          className="hero-buttons"
-          variants={{
-            hidden: { opacity: 0, y: 20 },
-            visible: { opacity: 1, y: 0 },
-          }}
-        >
-          <a href="#projects" className="primary-button">
-            Explore my work ↗
-          </a>
-          <a href="#about" className="secondary-button">
-            About me
-          </a>
+          <motion.h1
+            variants={{
+              hidden: { opacity: 0, y: 45 },
+              visible: {
+                opacity: 1,
+                y: 0,
+                transition: {
+                  duration: 1,
+                  ease: [0.22, 1, 0.36, 1],
+                },
+              },
+            }}
+          >
+            Engineering ideas through
+            <span> code, creativity & technology.</span>
+          </motion.h1>
+
+          <motion.p
+            className="hero-description"
+            variants={{
+                hidden: { opacity: 0, y: 25 },
+                visible: {
+                  opacity: 1,
+                  y: 0,
+                  transition: { duration: 0.8 },
+                },
+              }}
+          >
+            I'm a Computer Science student at the University of Auckland
+            interested in software development, interactive 3D environments
+            and the intersection of technology and the built environment.
+          </motion.p>
+
+          <motion.div
+            className="hero-buttons"
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0 },
+            }}
+          >
+            <a href="#projects" className="primary-button">
+              Explore my work ↗
+            </a>
+            <a href="#about" className="secondary-button">
+              About me
+            </a>
+          </motion.div>
+
+          
         </motion.div>
-      </motion.div>
-    </section>
+
+        <div className="hero-visual">
+          <div className="visual-label">INTERACTIVE 3D / 001</div>
+
+          <HeroScene />
+
+          <div className="visual-coordinates">
+            36° 50' S<br />
+            174° 45' E
+          </div>
+
+          <div className="visual-caption">
+            DESIGNING WHAT'S NEXT.
+          </div>
+        </div>
+      </section>
 
       <section className="projects" id="projects">
         <div className="section-heading">
