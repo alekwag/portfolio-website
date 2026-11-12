@@ -2,6 +2,7 @@ import './index.css'
 import Navbar from "./Navbar"
 import { motion } from "motion/react"
 import HeroScene from "./HeroScene"
+import CustomCursor from "./CustomCursor"
 
 import {
   BrowserRouter,
@@ -19,9 +20,10 @@ function HomePage() {
   return (
 
     <main>
+      <CustomCursor />
+
       <Navbar />
 
-      
       <section className="hero">
 
         <motion.div

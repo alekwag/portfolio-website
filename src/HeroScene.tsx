@@ -49,7 +49,7 @@ const buildings = useMemo(() => {
   useFrame((state) => {
     if (!cityRef.current) return
 
-    const baseY = state.clock.getElapsedTime() * 0.18
+    const baseY = state.clock.getElapsedTime() * 0.10
     cityRef.current.rotation.y = baseY + dragState.current.yaw
     cityRef.current.rotation.x = -0.12 + dragState.current.pitch
     cityRef.current.rotation.z = dragState.current.pitch * 0.25
@@ -76,7 +76,7 @@ const buildings = useMemo(() => {
           />
 
           <meshBasicMaterial
-            color="#ff7900"
+            color="#009dff"
             wireframe
             transparent
             opacity={0.9}
