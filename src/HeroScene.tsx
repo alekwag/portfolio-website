@@ -6,10 +6,17 @@ import * as THREE from "three"
 type DragState = {
   yaw: number
   pitch: number
+  spinVelocity: number
+  pointerOver: boolean
+  lastX: number | null
+  lastY: number | null
+  lastTime: number | null
 }
 
 function City({ dragState }: { dragState: React.MutableRefObject<DragState> }) {
   const cityRef = useRef<THREE.Group>(null)
+  const spinAngle = useRef(0)
+  const spinMomentum = useRef(0)
 
   
 const buildings = useMemo(() => {
@@ -46,13 +53,27 @@ const buildings = useMemo(() => {
 }, [])
 
 
-  useFrame((state) => {
+  useFrame((_, delta) => {
     if (!cityRef.current) return
 
-    const baseY = state.clock.getElapsedTime() * 0.10
-    cityRef.current.rotation.y = baseY + dragState.current.yaw
-    cityRef.current.rotation.x = -0.12 + dragState.current.pitch
-    cityRef.current.rotation.z = dragState.current.pitch * 0.25
+    const momentum = dragState.current
+    const city = cityRef.current
+
+    const hasRecentMovement =
+      momentum.pointerOver &&
+      momentum.lastTime !== null &&
+      performance.now() - momentum.lastTime < 100
+
+    spinMomentum.current = THREE.MathUtils.damp(
+      spinMomentum.current,
+      hasRecentMovement ? momentum.spinVelocity : 0,
+      hasRecentMovement ? 8 : 1.25,
+      delta
+    )
+    spinAngle.current += (0.1 + spinMomentum.current) * delta
+    city.rotation.y = spinAngle.current + momentum.yaw
+    city.rotation.x = -0.12 + momentum.pitch
+    city.rotation.z = momentum.pitch * 0.25
   })
 
   return (
@@ -91,25 +112,62 @@ export default function HeroScene() {
   const dragState = useRef<DragState>({
     yaw: 0,
     pitch: 0,
+    spinVelocity: 0,
+    pointerOver: false,
+    lastX: null,
+    lastY: null,
+    lastTime: null,
   })
 
   const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
     const rect = event.currentTarget.getBoundingClientRect()
     const x = (event.clientX - rect.left) / rect.width
     const y = (event.clientY - rect.top) / rect.height
+    const currentTime = event.timeStamp
+    const previousX = dragState.current.lastX
+    const previousY = dragState.current.lastY
+    const previousTime = dragState.current.lastTime
 
-    dragState.current.yaw = (x - 0.5) * 1.8
-    dragState.current.pitch = THREE.MathUtils.clamp(
-      (y - 0.5) * 1.4,
-      -0.9,
-      0.9
-    )
+    if (
+      previousX !== null &&
+      previousY !== null &&
+      previousTime !== null
+    ) {
+      const elapsed = Math.max((currentTime - previousTime) / 1000, 0.016)
+      const deltaX = x - previousX
+      const deltaY = y - previousY
+      const pointerSpeed = (deltaX / elapsed) * 0.5
+
+      dragState.current.yaw += deltaX * 1.8
+      dragState.current.pitch = THREE.MathUtils.clamp(
+        dragState.current.pitch + deltaY * 1.4,
+        -0.9,
+        0.9
+      )
+      dragState.current.spinVelocity = THREE.MathUtils.clamp(
+        THREE.MathUtils.lerp(dragState.current.spinVelocity, pointerSpeed, 0.35),
+        -3,
+        3
+      )
+    }
+
+    dragState.current.lastX = x
+    dragState.current.lastY = y
+    dragState.current.lastTime = currentTime
+    dragState.current.pointerOver = true
   }
 
   return (
     <div
       className="hero-3d"
       onPointerMove={handlePointerMove}
+      onPointerLeave={() => {
+        dragState.current.pointerOver = false
+        dragState.current.lastX = null
+        dragState.current.lastY = null
+        dragState.current.lastTime = null
+        dragState.current.spinVelocity = 0
+      }}
       style={{ cursor: "default", touchAction: "none" }}
     >
       <Canvas

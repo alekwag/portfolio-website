@@ -3,6 +3,7 @@ import Navbar from "./Navbar"
 import { motion } from "motion/react"
 import HeroScene from "./HeroScene"
 import CustomCursor from "./CustomCursor"
+import useScrollReveal from "./useScrollReveal"
 
 import {
   BrowserRouter,
@@ -16,6 +17,7 @@ import ProjectPage from './ProjectPage'
 
 
 function HomePage() {
+  useScrollReveal()
 
   return (
 
@@ -123,17 +125,19 @@ function HomePage() {
       </section>
 
       <section className="projects" id="projects">
-        <div className="section-heading">
-          <p className="eyebrow">01 / SELECTED WORK</p>
-          <h2>Projects & exploration.</h2>
-          <p>A collection of technical and creative work.</p>
+        <div className="scroll-reveal-watch">
+          <div className="section-heading scroll-reveal">
+            <p className="eyebrow">01 / SELECTED WORK</p>
+            <h2>Projects & exploration.</h2>
+            <p>A collection of technical and creative work.</p>
+          </div>
         </div>
 
         
         
         <div className="project-grid">
 
-          <Link to="/projects/horror-game" className="project-card">
+          <Link to="/projects/horror-game" className="project-card scroll-reveal">
 
             <div className="project-image">
               <img
@@ -168,7 +172,7 @@ function HomePage() {
             </div>
           </Link>
 
-          <Link to="/projects/recipe-website" className="project-card">
+          <Link to="/projects/recipe-website" className="project-card scroll-reveal">
             <div className="project-image">
               <span className="image-index">02 / WEB DEVELOPMENT</span>
               <img
@@ -202,7 +206,7 @@ function HomePage() {
 
           
           {/* PROJECT 03 — TOP-DOWN GAME */}
-          <Link to="/projects/topdown-game" className="project-card">
+          <Link to="/projects/topdown-game" className="project-card scroll-reveal">
             <div className="project-image topdown-image">
               <span className="image-index">03 / GAME DEVELOPMENT</span>
               <img
@@ -234,7 +238,7 @@ function HomePage() {
           </Link>
 
           {/* PROJECT 04 — PLATFORMER */}
-          <Link to="/projects/platformer" className="project-card">
+          <Link to="/projects/platformer" className="project-card scroll-reveal">
             <div className="project-image platformer-image">
               <span className="image-index">04 / GAME DEVELOPMENT</span>
               <img
@@ -267,7 +271,7 @@ function HomePage() {
           </Link>
 
           {/* PROJECT 05 — SAIFI SWIMWEAR */}
-          <Link to="/projects/saifi-swimwear" className="project-card">
+          <Link to="/projects/saifi-swimwear" className="project-card scroll-reveal">
             <div className="project-image saifi-image">
               <span className="image-index">05 / CAPSTONE PROJECT</span>
 
@@ -312,7 +316,7 @@ function HomePage() {
       </section>
 
       
-      <section className="about" id="about">
+      <section className="about scroll-reveal" id="about">
         <p className="eyebrow">02 / ABOUT</p>
 
         <h2>
@@ -343,12 +347,12 @@ function HomePage() {
       </section>
 
 
-      <section className="experience" id="experience">
+      <section className="experience scroll-reveal" id="experience">
         <p className="eyebrow">03 / EXPERIENCE</p>
         <h2>Experience & leadership.</h2>
 
         <div className="experience-list">
-          <div className="experience-item">
+          <div className="experience-item scroll-reveal">
             <div>
               <h3>Founding Executive</h3>
               <p>University of Auckland Boxing Club</p>
@@ -356,7 +360,7 @@ function HomePage() {
             <span>2025 — 2026</span>
           </div>
 
-          <div className="experience-item">
+          <div className="experience-item scroll-reveal">
             <div>
               <h3>Mathematics Tutor</h3>
               <p>High School Mathematics Tutoring</p>
@@ -364,7 +368,7 @@ function HomePage() {
             <span>2024</span>
           </div>
 
-          <div className="experience-item">
+          <div className="experience-item scroll-reveal">
             <div>
               <h3>Beekeeper</h3>
               <p>Tahi</p>
@@ -372,7 +376,7 @@ function HomePage() {
             <span>2025</span>
           </div>
 
-          <div className="experience-item">
+          <div className="experience-item scroll-reveal">
             <div>
               <h3>POS Operator</h3>
               <p>BP</p>
@@ -385,11 +389,11 @@ function HomePage() {
 
 
       
-      <section className="skills" id="skills">
+      <section className="skills scroll-reveal" id="skills">
         <p className="eyebrow">04 / TECHNICAL SKILLS</p>
         <h2>Tools & technologies.</h2>
 
-        <div className="skill-category">
+        <div className="skill-category scroll-reveal">
           <h3>Programming languages</h3>
           <div className="skill-list">
             <span>Python</span>
@@ -402,7 +406,7 @@ function HomePage() {
           </div>
         </div>
 
-        <div className="skill-category">
+        <div className="skill-category scroll-reveal">
           <h3>Frameworks & technologies</h3>
           <div className="skill-list">
             <span>Flask</span>
@@ -416,7 +420,7 @@ function HomePage() {
           </div>
         </div>
 
-        <div className="skill-category">
+        <div className="skill-category scroll-reveal">
           <h3>Developer tools & workflow</h3>
           <div className="skill-list">
             <span>Git</span>
@@ -430,7 +434,7 @@ function HomePage() {
           </div>
         </div>
 
-        <div className="skill-category">
+        <div className="skill-category scroll-reveal">
           <h3>Libraries</h3>
           <div className="skill-list">
             <span>NumPy</span>
@@ -441,7 +445,7 @@ function HomePage() {
 
 
       
-      <section className="contact" id="contact">
+      <section className="contact scroll-reveal" id="contact">
         <div className="contact-header">
           <p className="eyebrow">05 / GET IN TOUCH</p>
 
@@ -462,7 +466,7 @@ function HomePage() {
 
           <a
             href="mailto:Wagneralek@gmail.com"
-            className="contact-card"
+            className="contact-card scroll-reveal"
           >
             <div className="contact-card-top">
               <span className="contact-icon">✉</span>
@@ -480,7 +484,7 @@ function HomePage() {
             href="https://github.com/alekwag"
             target="_blank"
             rel="noopener noreferrer"
-            className="contact-card"
+            className="contact-card scroll-reveal"
           >
             <div className="contact-card-top">
               <span className="contact-icon">⌘</span>
@@ -498,7 +502,7 @@ function HomePage() {
             href="https://www.linkedin.com/in/alexander-wagner-0b5985359/"
             target="_blank"
             rel="noopener noreferrer"
-            className="contact-card"
+            className="contact-card scroll-reveal"
           >
             <div className="contact-card-top">
               <span className="contact-icon">in</span>
