@@ -22,17 +22,9 @@
 
 .fallback-building {
   flex-shrink: 0;
-  border: 1px solid rgba(255, 121, 0, 0.8);
+  border: 1px solid rgba(8, 58, 140, 0.8);
   background: rgba(255, 121, 0, 0.025);
   box-shadow: 0 0 9px rgba(255, 121, 0, 0.12);
 }
 
-.fallback-label {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  font-family: monospace;
-  font-size: 11px;
-  letter-spacing: 2px;
-  color: #c6a477;
-}
+

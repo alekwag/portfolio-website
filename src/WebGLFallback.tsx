@@ -16,10 +16,6 @@ export default function WebGLFallback() {
           />
         ))}
       </div>
-
-      <span className="fallback-label">
-        INTERACTIVE 3D / 001
-      </span>
     </div>
   )
 }
