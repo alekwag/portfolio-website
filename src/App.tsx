@@ -176,7 +176,7 @@ function HomePage() {
             <div className="project-image">
               <span className="image-index">02 / WEB DEVELOPMENT</span>
               <img
-                src="public/images/recipe-website.png"
+                src="/images/recipe-website.png"
                 alt="3D horror game environment"
               />
               
@@ -210,7 +210,7 @@ function HomePage() {
             <div className="project-image topdown-image">
               <span className="image-index">03 / GAME DEVELOPMENT</span>
               <img
-                src="public/images/topdown-game.png"
+                src="/images/topdown-game.png"
                 alt="2D top-down game environment"
               />
               <span className="image-caption">2D TOP-DOWN GAME</span>
@@ -242,7 +242,7 @@ function HomePage() {
             <div className="project-image platformer-image">
               <span className="image-index">04 / GAME DEVELOPMENT</span>
               <img
-                src="public/images/platformer.png"
+                src="/images/platformer.png"
                 alt="2D platformer game environment"
               />
               <span className="image-caption">2D PLATFORMER</span>

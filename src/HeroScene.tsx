@@ -1,7 +1,15 @@
+import {
+  useMemo,
+  useRef,
+  useEffect,
+  useState,
+} from "react"
 
-import { useMemo, useRef } from "react"
+import { Component, type ReactNode } from "react"
 import { Canvas, useFrame } from "@react-three/fiber"
 import * as THREE from "three"
+import WebGLFallback from "./WebGLFallback"
+
 
 type DragState = {
   yaw: number
@@ -108,7 +116,59 @@ const buildings = useMemo(() => {
   )
 }
 
+
+
+function checkWebGL() {
+  try {
+    const canvas = document.createElement("canvas")
+
+    const gl =
+      canvas.getContext("webgl2") ||
+      canvas.getContext("webgl")
+
+    if (!gl) return false
+
+    // Release the temporary graphics context
+    const extension = gl.getExtension("WEBGL_lose_context")
+    extension?.loseContext()
+
+    return true
+  } catch {
+    return false
+  }
+}
+
+
+
+
+class WebGLErrorBoundary extends Component<
+  { children: ReactNode },
+  { failed: boolean }
+> {
+  state = { failed: false }
+
+  static getDerivedStateFromError() {
+    return { failed: true }
+  }
+
+  componentDidCatch(error: Error) {
+    console.error("3D scene failed:", error)
+  }
+
+  render() {
+    if (this.state.failed) {
+      return <WebGLFallback />
+    }
+
+    return this.props.children
+  }
+}
+
+
+
 export default function HeroScene() {
+  const [webglAvailable, setWebglAvailable] = useState<boolean | null>(null)
+
   const dragState = useRef<DragState>({
     yaw: 0,
     pitch: 0,
@@ -119,10 +179,17 @@ export default function HeroScene() {
     lastTime: null,
   })
 
-  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+  useEffect(() => {
+    setWebglAvailable(checkWebGL())
+  }, [])
+
+  const handlePointerMove = (
+    event: React.PointerEvent<HTMLDivElement>
+  ) => {
     const rect = event.currentTarget.getBoundingClientRect()
     const x = (event.clientX - rect.left) / rect.width
     const y = (event.clientY - rect.top) / rect.height
+
     const currentTime = event.timeStamp
     const previousX = dragState.current.lastX
     const previousY = dragState.current.lastY
@@ -133,19 +200,30 @@ export default function HeroScene() {
       previousY !== null &&
       previousTime !== null
     ) {
-      const elapsed = Math.max((currentTime - previousTime) / 1000, 0.016)
+      const elapsed = Math.max(
+        (currentTime - previousTime) / 1000,
+        0.016
+      )
+
       const deltaX = x - previousX
       const deltaY = y - previousY
+
       const pointerSpeed = (deltaX / elapsed) * 0.5
 
       dragState.current.yaw += deltaX * 1.8
+
       dragState.current.pitch = THREE.MathUtils.clamp(
         dragState.current.pitch + deltaY * 1.4,
         -0.9,
         0.9
       )
+
       dragState.current.spinVelocity = THREE.MathUtils.clamp(
-        THREE.MathUtils.lerp(dragState.current.spinVelocity, pointerSpeed, 0.35),
+        THREE.MathUtils.lerp(
+          dragState.current.spinVelocity,
+          pointerSpeed,
+          0.35
+        ),
         -3,
         3
       )
@@ -157,34 +235,50 @@ export default function HeroScene() {
     dragState.current.pointerOver = true
   }
 
+  const handlePointerLeave = () => {
+    dragState.current.pointerOver = false
+    dragState.current.lastX = null
+    dragState.current.lastY = null
+    dragState.current.lastTime = null
+    dragState.current.spinVelocity = 0
+  }
+
+  if (webglAvailable === null) {
+    return <div className="hero-3d" />
+  }
+
+  if (!webglAvailable) {
+    return (
+      <div className="hero-3d">
+        <WebGLFallback />
+      </div>
+    )
+  }
+
   return (
     <div
       className="hero-3d"
       onPointerMove={handlePointerMove}
-      onPointerLeave={() => {
-        dragState.current.pointerOver = false
-        dragState.current.lastX = null
-        dragState.current.lastY = null
-        dragState.current.lastTime = null
-        dragState.current.spinVelocity = 0
-      }}
+      onPointerLeave={handlePointerLeave}
       style={{ cursor: "default", touchAction: "none" }}
     >
-      <Canvas
-        orthographic
-        camera={{
-          position: [15, 25, 35],
-          zoom: 15,
-          near: 0.1,
-          far: 200,
-        }}
-        gl={{ antialias: true, alpha: true }}
-        dpr={[1, 1.5]}
-      >
-        <color attach="background" args={["#101110"]} />
-        <ambientLight intensity={1} />
-        <City dragState={dragState} />
-      </Canvas>
+      <WebGLErrorBoundary>
+        <Canvas
+          orthographic
+          camera={{
+            position: [15, 25, 35],
+            zoom: 15,
+            near: 0.1,
+            far: 200,
+          }}
+          gl={{ antialias: true, alpha: true }}
+          dpr={[1, 1.5]}
+        >
+          <color attach="background" args={["#101110"]} />
+          <ambientLight intensity={1} />
+          <City dragState={dragState} />
+        </Canvas>
+      </WebGLErrorBoundary>
     </div>
   )
 }

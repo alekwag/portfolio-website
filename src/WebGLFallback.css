@@ -1,0 +1,38 @@
+
+.webgl-fallback {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fallback-grid {
+  width: 90%;
+  height: 70%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 12px;
+  perspective: 500px;
+  transform: rotateX(12deg);
+}
+
+.fallback-building {
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 121, 0, 0.8);
+  background: rgba(255, 121, 0, 0.025);
+  box-shadow: 0 0 9px rgba(255, 121, 0, 0.12);
+}
+
+.fallback-label {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-family: monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #c6a477;
+}
